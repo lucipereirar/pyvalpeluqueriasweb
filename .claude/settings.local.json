@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mvn clean *)",
+      "PowerShell(Start-Process -FilePath \"cmd.exe\" -ArgumentList \"/k title EUREKA-SERVER && cd /d `\"C:\\\\Users\\\\laper\\\\peluqueria-backend\\\\eureka-server\\\\eureka-server`\" && mvnw.cmd spring-boot:run\" -WindowStyle Normal)",
+      "Bash(Get-ChildItem -Path 'C:\\\\Users\\\\laper\\\\peluqueria-backend' -Directory)",
+      "Bash(Select-Object Name)",
+      "Bash(curl *)",
+      "Bash(python -m json.tool)"
+    ]
+  }
+}

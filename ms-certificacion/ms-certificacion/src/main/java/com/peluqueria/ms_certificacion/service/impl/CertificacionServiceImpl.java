@@ -1,0 +1,83 @@
+package com.peluqueria.ms_certificacion.service.impl;
+
+import com.peluqueria.ms_certificacion.dto.CertificacionRequestDTO;
+import com.peluqueria.ms_certificacion.dto.CertificacionResponseDTO;
+import com.peluqueria.ms_certificacion.exception.ResourceNotFoundException;
+import com.peluqueria.ms_certificacion.mapper.CertificacionMapper;
+import com.peluqueria.ms_certificacion.model.Certificacion;
+import com.peluqueria.ms_certificacion.model.EstadoCertificacion;
+import com.peluqueria.ms_certificacion.repository.CertificacionRepository;
+import com.peluqueria.ms_certificacion.service.CertificacionService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class CertificacionServiceImpl implements CertificacionService {
+
+    private final CertificacionRepository certificacionRepository;
+
+    @Override
+    public CertificacionResponseDTO crear(CertificacionRequestDTO dto) {
+        Certificacion certificacion = CertificacionMapper.toEntity(dto);
+        certificacion.setCodigoVerificacion(UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+        return CertificacionMapper.toDTO(certificacionRepository.save(certificacion));
+    }
+
+    @Override
+    public CertificacionResponseDTO buscarPorId(Long id) {
+        Certificacion certificacion = certificacionRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Certificación no encontrada con id: " + id));
+        return CertificacionMapper.toDTO(certificacion);
+    }
+
+    @Override
+    public CertificacionResponseDTO buscarPorCodigo(String codigoVerificacion) {
+        Certificacion certificacion = certificacionRepository.findByCodigoVerificacion(codigoVerificacion)
+                .orElseThrow(() -> new ResourceNotFoundException("Certificación no encontrada con código: " + codigoVerificacion));
+        return CertificacionMapper.toDTO(certificacion);
+    }
+
+    @Override
+    public List<CertificacionResponseDTO> listarPorUsuario(Long usuarioId) {
+        return certificacionRepository.findByUsuarioId(usuarioId).stream()
+                .map(CertificacionMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CertificacionResponseDTO> listarTodas() {
+        return certificacionRepository.findAll().stream()
+                .map(CertificacionMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public CertificacionResponseDTO actualizar(Long id, CertificacionRequestDTO dto) {
+        Certificacion certificacion = certificacionRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Certificación no encontrada con id: " + id));
+        certificacion.setTitulo(dto.getTitulo());
+        certificacion.setDescripcion(dto.getDescripcion());
+        certificacion.setFechaVencimiento(dto.getFechaVencimiento());
+        return CertificacionMapper.toDTO(certificacionRepository.save(certificacion));
+    }
+
+    @Override
+    public CertificacionResponseDTO cambiarEstado(Long id, String estado) {
+        Certificacion certificacion = certificacionRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Certificación no encontrada con id: " + id));
+        certificacion.setEstado(EstadoCertificacion.valueOf(estado));
+        return CertificacionMapper.toDTO(certificacionRepository.save(certificacion));
+    }
+
+    @Override
+    public void eliminar(Long id) {
+        certificacionRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Certificación no encontrada con id: " + id));
+        certificacionRepository.deleteById(id);
+    }
+}
