@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.peluqueria</groupId>
+    <artifactId>peluqueria-backend</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+    <name>peluqueria-backend</name>
+    <description>Backend de microservicios para la peluquería</description>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.3.5</version>
+        <relativePath/>
+    </parent>
+
+    <properties>
+        <java.version>21</java.version>
+        <spring-cloud.version>2023.0.3</spring-cloud.version>
+    </properties>
+
+    <modules>
+        <module>eureka-server/eureka-server</module>
+        <module>API Gateway/API-Gateway</module>
+        <module>ms-auth/ms-auth</module>
+        <module>ms-productos/ms-productos</module>
+        <module>ms-carrito/ms-carrito</module>
+        <module>ms-pedidos/ms-pedidos</module>
+        <module>ms-pago/ms-pago</module>
+        <module>ms-despacho/ms-despacho</module>
+        <module>ms-certificacion/ms-certificacion</module>
+        <module>ms-notificaciones/ms-notificaciones</module>
+        <module>ms-reportes/ms-reportes</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>
