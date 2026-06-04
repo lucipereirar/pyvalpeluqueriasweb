@@ -1,3 +1,6 @@
+# Configuracion local del editor/herramientas
+.claude/
+
 # Logs de ejecucion
 logs/
 *.log
