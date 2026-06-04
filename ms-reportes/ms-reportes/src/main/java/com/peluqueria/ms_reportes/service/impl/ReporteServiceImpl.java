@@ -11,6 +11,7 @@ import com.peluqueria.ms_reportes.service.ReporteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,9 +43,14 @@ public class ReporteServiceImpl implements ReporteService {
 
     @Override
     public List<ReporteResponseDTO> listarPorTipo(String tipo) {
-        return reporteRepository.findByTipo(TipoReporte.valueOf(tipo)).stream()
-                .map(ReporteMapper::toDTO)
-                .collect(Collectors.toList());
+        try {
+            return reporteRepository.findByTipo(TipoReporte.valueOf(tipo.toUpperCase())).stream()
+                    .map(ReporteMapper::toDTO)
+                    .collect(Collectors.toList());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Tipo de reporte inválido: '" + tipo +
+                    "'. Valores permitidos: " + Arrays.toString(TipoReporte.values()));
+        }
     }
 
     @Override

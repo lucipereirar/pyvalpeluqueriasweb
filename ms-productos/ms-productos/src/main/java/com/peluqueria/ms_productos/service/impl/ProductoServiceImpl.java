@@ -11,6 +11,7 @@ import com.peluqueria.ms_productos.service.ProductoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,9 +50,14 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     public List<ProductoResponseDTO> listarPorCategoria(String categoria) {
-        return productoRepository.findByCategoriaAndActivoTrue(Categoria.valueOf(categoria)).stream()
-                .map(ProductoMapper::toDTO)
-                .collect(Collectors.toList());
+        try {
+            return productoRepository.findByCategoriaAndActivoTrue(Categoria.valueOf(categoria.toUpperCase())).stream()
+                    .map(ProductoMapper::toDTO)
+                    .collect(Collectors.toList());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Categoría inválida: '" + categoria +
+                    "'. Valores permitidos: " + Arrays.toString(Categoria.values()));
+        }
     }
 
     @Override
@@ -69,7 +75,12 @@ public class ProductoServiceImpl implements ProductoService {
         producto.setDescripcion(dto.getDescripcion());
         producto.setPrecio(dto.getPrecio());
         producto.setStock(dto.getStock());
-        producto.setCategoria(Categoria.valueOf(dto.getCategoria()));
+        try {
+            producto.setCategoria(Categoria.valueOf(dto.getCategoria().toUpperCase()));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Categoría inválida: '" + dto.getCategoria() +
+                    "'. Valores permitidos: " + Arrays.toString(Categoria.values()));
+        }
         producto.setImagen(dto.getImagen());
         return ProductoMapper.toDTO(productoRepository.save(producto));
     }

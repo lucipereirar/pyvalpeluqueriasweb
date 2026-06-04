@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -77,7 +78,12 @@ public class PedidoServiceImpl implements PedidoService {
     public PedidoResponseDTO actualizarEstado(Long id, String estado) {
         Pedido pedido = pedidoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Pedido no encontrado con id: " + id));
-        pedido.setEstado(EstadoPedido.valueOf(estado));
+        try {
+            pedido.setEstado(EstadoPedido.valueOf(estado.toUpperCase()));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Estado inválido: '" + estado +
+                    "'. Valores permitidos: " + Arrays.toString(EstadoPedido.values()));
+        }
         pedido.setFechaActualizacion(LocalDateTime.now());
         return PedidoMapper.toDTO(pedidoRepository.save(pedido));
     }

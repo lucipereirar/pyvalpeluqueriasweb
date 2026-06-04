@@ -2,6 +2,7 @@ package com.peluqueria.ms_auth.service.impl;
 
 import com.peluqueria.ms_auth.dto.UsuarioRequestDTO;
 import com.peluqueria.ms_auth.dto.UsuarioResponseDTO;
+import com.peluqueria.ms_auth.exception.ConflictException;
 import com.peluqueria.ms_auth.exception.ResourceNotFoundException;
 import com.peluqueria.ms_auth.mapper.UsuarioMapper;
 import com.peluqueria.ms_auth.model.Usuario;
@@ -24,7 +25,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public UsuarioResponseDTO crear(UsuarioRequestDTO dto) {
         if (usuarioRepository.existsByEmail(dto.getEmail())) {
-            throw new RuntimeException("Ya existe un usuario con el email: " + dto.getEmail());
+            throw new ConflictException("Ya existe un usuario registrado con el email: " + dto.getEmail());
         }
         Usuario usuario = UsuarioMapper.toEntity(dto);
         usuario.setPassword(passwordEncoder.encode(dto.getPassword()));

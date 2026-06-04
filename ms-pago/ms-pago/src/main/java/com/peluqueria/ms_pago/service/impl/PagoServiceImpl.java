@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -63,7 +64,12 @@ public class PagoServiceImpl implements PagoService {
     public PagoResponseDTO actualizarEstado(Long id, String estado) {
         Pago pago = pagoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Pago no encontrado con id: " + id));
-        pago.setEstado(EstadoPago.valueOf(estado));
+        try {
+            pago.setEstado(EstadoPago.valueOf(estado.toUpperCase()));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Estado de pago inválido: '" + estado +
+                    "'. Valores permitidos: " + Arrays.toString(EstadoPago.values()));
+        }
         return PagoMapper.toDTO(pagoRepository.save(pago));
     }
 

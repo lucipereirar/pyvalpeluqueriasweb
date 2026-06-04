@@ -11,6 +11,7 @@ import com.peluqueria.ms_certificacion.service.CertificacionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -70,7 +71,12 @@ public class CertificacionServiceImpl implements CertificacionService {
     public CertificacionResponseDTO cambiarEstado(Long id, String estado) {
         Certificacion certificacion = certificacionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Certificación no encontrada con id: " + id));
-        certificacion.setEstado(EstadoCertificacion.valueOf(estado));
+        try {
+            certificacion.setEstado(EstadoCertificacion.valueOf(estado.toUpperCase()));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Estado de certificación inválido: '" + estado +
+                    "'. Valores permitidos: " + Arrays.toString(EstadoCertificacion.values()));
+        }
         return CertificacionMapper.toDTO(certificacionRepository.save(certificacion));
     }
 

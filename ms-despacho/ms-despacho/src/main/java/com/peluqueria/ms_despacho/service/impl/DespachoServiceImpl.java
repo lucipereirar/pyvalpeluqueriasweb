@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -68,8 +69,15 @@ public class DespachoServiceImpl implements DespachoService {
     public DespachoResponseDTO actualizarEstado(Long id, String estado) {
         Despacho despacho = despachoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Despacho no encontrado con id: " + id));
-        despacho.setEstado(EstadoDespacho.valueOf(estado));
-        if (EstadoDespacho.ENTREGADO.name().equals(estado)) {
+        EstadoDespacho nuevoEstado;
+        try {
+            nuevoEstado = EstadoDespacho.valueOf(estado.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Estado de despacho inválido: '" + estado +
+                    "'. Valores permitidos: " + Arrays.toString(EstadoDespacho.values()));
+        }
+        despacho.setEstado(nuevoEstado);
+        if (EstadoDespacho.ENTREGADO.equals(nuevoEstado)) {
             despacho.setFechaEntregaReal(LocalDateTime.now());
         }
         return DespachoMapper.toDTO(despachoRepository.save(despacho));

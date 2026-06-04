@@ -1,0 +1,19 @@
+# Logs de ejecucion
+logs/
+*.log
+
+# Artefactos de compilacion Maven
+target/
+**/target/
+
+# Archivos de IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+# Sistema operativo
+Thumbs.db
+.DS_Store
