@@ -1,0 +1,166 @@
+﻿version: '3.8'
+
+services:
+  mysql-db:
+    image: mysql:8.0
+    container_name: mysql-db
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+    networks:
+      - peluqueria-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  eureka-server:
+    build:
+      context: ./eureka-server/eureka-server
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - peluqueria-net
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+
+  api-gateway:
+    build:
+      context: ./API Gateway/API-Gateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - peluqueria-net
+    depends_on:
+      - eureka-server
+
+  ms-auth:
+    build:
+      context: ./ms-auth/ms-auth
+    container_name: ms-auth
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - peluqueria-net
+    depends_on:
+      - eureka-server
+      mysql-db:
+        condition: service_healthy
+
+  ms-productos:
+    build:
+      context: ./ms-productos/ms-productos
+    container_name: ms-productos
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - peluqueria-net
+    depends_on:
+      - eureka-server
+      mysql-db:
+        condition: service_healthy
+
+  ms-carrito:
+    build:
+      context: ./ms-carrito/ms-carrito
+    container_name: ms-carrito
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - peluqueria-net
+    depends_on:
+      - eureka-server
+      mysql-db:
+        condition: service_healthy
+
+  ms-pedidos:
+    build:
+      context: ./ms-pedidos/ms-pedidos
+    container_name: ms-pedidos
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - peluqueria-net
+    depends_on:
+      - eureka-server
+      mysql-db:
+        condition: service_healthy
+
+  ms-pago:
+    build:
+      context: ./ms-pago/ms-pago
+    container_name: ms-pago
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - peluqueria-net
+    depends_on:
+      - eureka-server
+      mysql-db:
+        condition: service_healthy
+
+  ms-despacho:
+    build:
+      context: ./ms-despacho/ms-despacho
+    container_name: ms-despacho
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - peluqueria-net
+    depends_on:
+      - eureka-server
+      mysql-db:
+        condition: service_healthy
+
+  ms-certificacion:
+    build:
+      context: ./ms-certificacion/ms-certificacion
+    container_name: ms-certificacion
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - peluqueria-net
+    depends_on:
+      - eureka-server
+      mysql-db:
+        condition: service_healthy
+
+  ms-notificaciones:
+    build:
+      context: ./ms-notificaciones/ms-notificaciones
+    container_name: ms-notificaciones
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - peluqueria-net
+    depends_on:
+      - eureka-server
+      mysql-db:
+        condition: service_healthy
+
+  ms-reportes:
+    build:
+      context: ./ms-reportes/ms-reportes
+    container_name: ms-reportes
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - peluqueria-net
+    depends_on:
+      - eureka-server
+      mysql-db:
+        condition: service_healthy
+
+networks:
+  peluqueria-net:
+    driver: bridge
