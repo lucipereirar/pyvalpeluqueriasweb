@@ -20,7 +20,7 @@
 
 Sistema de e-commerce de productos de belleza/peluquería con **arquitectura de microservicios** (Spring Boot + Spring Cloud).
 
-**11 servicios en total:**
+**10 servicios en total:**
 
 | Servicio | Puerto | Función |
 |----------|--------|---------|
@@ -30,11 +30,12 @@ Sistema de e-commerce de productos de belleza/peluquería con **arquitectura de 
 | ms-productos | 8082 | Catálogo de productos |
 | ms-carrito | 8083 | Carrito de compras (llama a ms-productos) |
 | ms-pedidos | 8084 | Pedidos, calcula subtotal/IVA/total (llama a ms-productos) |
-| ms-pago | 8085 | Procesamiento de pagos |
-| ms-despacho | 8086 | Despachos y tracking |
+| ms-pago | 8085 | Procesamiento de pagos (al aprobar: notifica y crea despacho) |
+| ms-despacho | 8086 | Despachos y tracking (al crear/cambiar estado: notifica) |
 | ms-notificaciones | 8087 | Notificaciones por usuario |
-| ms-certificacion | 8088 | Certificaciones de compra |
-| ms-reportes | 8089 | Reportes (exportables a Excel con Apache POI) |
+| ms-reportes | 8089 | Analítica de ventas: consulta ms-pedidos y ms-pago (Feign), KPIs en JSON y exportación a Excel (Apache POI) |
+
+> **Nota sobre la evolución del sistema:** originalmente había 11 servicios. Se **descartó `ms-certificacion`** (puerto 8088) por no aportar valor al negocio: emitía "certificaciones" con fecha de vencimiento y código de verificación —un dominio de diplomas/cursos— que no encaja en un e-commerce de productos de belleza y que además vivía aislado (sin integración con pedidos ni pagos). En su lugar se reforzó la integración real entre servicios (ver 2.8).
 
 **Patrón de arquitectura por servicio (CSR):**
 `controller` → `service` (interface + impl) → `repository` → `model`, con `dto`, `mapper`, `exception` y `client` (Feign) donde aplica.
@@ -192,6 +193,48 @@ void testCancelar_Success() {
 
 **Truco mental:** pregúntate siempre "¿qué necesita encontrar el método para funcionar?" (eso va en el Given con `when`) y "¿qué debería pasar como resultado?" (eso va en el Then con `assert`/`verify`).
 
+### 2.8 Comunicación entre servicios: flujo de compra y analítica
+
+Además del caso pedidos→productos, el sistema tiene comunicación Feign en el flujo de compra y en los reportes. Es material típico de defensa sobre arquitectura de microservicios.
+
+**Flujo de compra (coreografía vía Feign):**
+
+```
+pago aprobado ──► notificación (tipo PAGO)
+              └─► despacho creado ──► notificación (tipo DESPACHO)
+cambio de estado del despacho ──► notificación (tipo DESPACHO)
+```
+
+- **ms-pago**, al aprobar un pago, llama por Feign a **ms-notificaciones** (avisa al usuario) y a **ms-despacho** (genera el despacho con su código de tracking).
+- **ms-despacho**, al crear el despacho y al cambiar su estado (EN_CAMINO, ENTREGADO…), llama por Feign a **ms-notificaciones**.
+
+**Punto clave de defensa — resiliencia (best-effort):** estas llamadas son *efectos secundarios* envueltos en `try/catch` y registradas con log. Si ms-notificaciones o ms-despacho están caídos, **el pago igual se confirma**; no se propaga el fallo a la operación principal. Es una decisión de diseño consciente: la transacción central (el pago) no debe depender de que un servicio secundario esté disponible.
+
+```java
+// ms-pago: PagoServiceImpl.procesar(...)
+Pago guardado = pagoRepository.save(pago);
+notificarPagoAprobado(guardado);   // best-effort: try/catch interno
+crearDespacho(guardado, dto);      // best-effort: try/catch interno
+return PagoMapper.toDTO(guardado);
+```
+
+**Cómo se testea:** en `PagoServiceImplTest` se mockean `NotificacionFeignClient` y `DespachoFeignClient`, y se verifica que al procesar un pago se dispara el flujo:
+
+```java
+@Mock private NotificacionFeignClient notificacionClient;
+@Mock private DespachoFeignClient despachoClient;
+// ...
+verify(notificacionClient, times(1)).crear(any(NotificacionClientDTO.class));
+verify(despachoClient, times(1)).crear(any(DespachoClientDTO.class));
+```
+
+**Analítica de ventas (ms-reportes):** ms-reportes consume por Feign a **ms-pedidos** (`GET /api/pedidos`) y **ms-pago** (`GET /api/pagos`) para calcular indicadores:
+
+- `GET /api/reportes/ventas/resumen?desde=&hasta=` → KPIs en JSON: total de ventas (pagos aprobados), ticket promedio, ventas por método de pago, pedidos por estado y ranking de productos más vendidos.
+- `GET /api/reportes/ventas/excel?desde=&hasta=` → el mismo reporte como archivo `.xlsx` generado con **Apache POI** (hojas de Resumen, Método de pago, Pedidos por estado y Top productos).
+
+Esto atiende dos necesidades del negocio: el **dueño** consulta sus ventas (endpoint JSON) y el **equipo de desarrollo** entrega un reporte periódico descargable (endpoint Excel).
+
 ---
 
 ## 3. Bloque 2 — Levantar y configurar los servicios
@@ -205,7 +248,7 @@ void testCancelar_Success() {
         ▲
    API Gateway (8080)  ← PUERTA DE ENTRADA: pregunta a Eureka dónde está cada servicio
         ▲
-   9 Microservicios (8081–8089)
+   8 Microservicios (8081–8087, 8089)
 ```
 
 | Orden | Servicio | Por qué |
@@ -228,7 +271,7 @@ void testCancelar_Success() {
 
 **Explicación:** el servicio se inicializa como STARTING, se registra en Eureka con su nombre (MS-AUTH) y estado UP, y Tomcat queda escuchando en su puerto. Desde ahí el Gateway ya puede enrutarle.
 
-Verificación: `http://localhost:8761` muestra la tabla "Instances currently registered with Eureka" con los 10 servicios (9 ms + gateway). **Eureka no se lista a sí mismo** (es normal).
+Verificación: `http://localhost:8761` muestra la tabla "Instances currently registered with Eureka" con los 9 servicios (8 ms + gateway). **Eureka no se lista a sí mismo** (es normal).
 
 ### 3.3 Cómo arrancar los servicios — dos formas
 
@@ -320,11 +363,17 @@ Para aislar la lógica del servicio de sus dependencias (repositorio, Feign Clie
 **P7. ¿Qué diferencia hay entre `assert` y `verify`?**
 `assert` comprueba el valor devuelto por el método. `verify` comprueba el comportamiento: que el servicio llamó (o no) a un método de una dependencia.
 
+**P8. ¿Qué pasa en tu sistema cuando se aprueba un pago?**
+ms-pago guarda el pago como APROBADO y, por Feign, dispara dos efectos: notifica al usuario (ms-notificaciones) y crea el despacho (ms-despacho), que a su vez genera otra notificación con el código de tracking. Es una **coreografía**: cada servicio reacciona sin un orquestador central. Las llamadas son *best-effort* (envueltas en try/catch): si un servicio secundario está caído, el pago igual se confirma.
+
+**P9. Eliminaste un microservicio, ¿por qué y cómo?**
+Eliminé `ms-certificacion` porque no aportaba valor al negocio (emitía certificaciones tipo diploma, ajenas a un e-commerce, y estaba aislado). Al quitarlo actualicé todas sus referencias: módulo del `pom.xml` padre, `docker-compose.yml`, `init.sql`, scripts de arranque, la ruta del API Gateway (renumerando los índices para no dejar huecos) y el README. Tras el cambio, `mvn compile` de los 10 módulos sigue en verde.
+
 ---
 
 ## 5. Cheat sheet (referencia rápida)
 
-**Puertos:** Eureka 8761 · Gateway 8080 · auth 8081 · productos 8082 · carrito 8083 · pedidos 8084 · pago 8085 · despacho 8086 · notificaciones 8087 · certificacion 8088 · reportes 8089
+**Puertos:** Eureka 8761 · Gateway 8080 · auth 8081 · productos 8082 · carrito 8083 · pedidos 8084 · pago 8085 · despacho 8086 · notificaciones 8087 · reportes 8089 · *(8088 libre: ms-certificacion descartado)*
 
 **Arranque:** MySQL → Eureka → microservicios → Gateway
 

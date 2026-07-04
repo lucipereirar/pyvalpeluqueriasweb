@@ -122,19 +122,6 @@ services:
       mysql-db:
         condition: service_healthy
 
-  ms-certificacion:
-    build:
-      context: ./ms-certificacion/ms-certificacion
-    container_name: ms-certificacion
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-    networks:
-      - peluqueria-net
-    depends_on:
-      - eureka-server
-      mysql-db:
-        condition: service_healthy
-
   ms-notificaciones:
     build:
       context: ./ms-notificaciones/ms-notificaciones

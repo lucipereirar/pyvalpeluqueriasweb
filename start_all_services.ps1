@@ -15,7 +15,6 @@ $services = @(
     @{ name = "ms-pago";          path = "$base\ms-pago\ms-pago" },
     @{ name = "ms-despacho";      path = "$base\ms-despacho\ms-despacho" },
     @{ name = "ms-notificaciones";path = "$base\ms-notificaciones\ms-notificaciones" },
-    @{ name = "ms-certificacion"; path = "$base\ms-certificacion\ms-certificacion" },
     @{ name = "ms-reportes";      path = "$base\ms-reportes\ms-reportes" }
 )
 

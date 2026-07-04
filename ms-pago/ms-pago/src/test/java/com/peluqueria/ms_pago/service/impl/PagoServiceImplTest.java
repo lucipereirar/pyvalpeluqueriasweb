@@ -1,5 +1,9 @@
 package com.peluqueria.ms_pago.service.impl;
 
+import com.peluqueria.ms_pago.client.DespachoFeignClient;
+import com.peluqueria.ms_pago.client.NotificacionFeignClient;
+import com.peluqueria.ms_pago.client.dto.DespachoClientDTO;
+import com.peluqueria.ms_pago.client.dto.NotificacionClientDTO;
 import com.peluqueria.ms_pago.dto.PagoRequestDTO;
 import com.peluqueria.ms_pago.dto.PagoResponseDTO;
 import com.peluqueria.ms_pago.exception.ResourceNotFoundException;
@@ -33,6 +37,12 @@ public class PagoServiceImplTest {
 
     @Mock
     private PagoRepository pagoRepository;
+
+    @Mock
+    private NotificacionFeignClient notificacionClient;
+
+    @Mock
+    private DespachoFeignClient despachoClient;
 
     @InjectMocks
     private PagoServiceImpl pagoService;
@@ -80,6 +90,9 @@ public class PagoServiceImplTest {
         assertEquals("APROBADO", response.getEstado());
         assertNotNull(response.getTransaccionId());
         verify(pagoRepository, times(1)).save(any(Pago.class));
+        // El pago aprobado dispara la notificación y la creación del despacho (coreografía).
+        verify(notificacionClient, times(1)).crear(any(NotificacionClientDTO.class));
+        verify(despachoClient, times(1)).crear(any(DespachoClientDTO.class));
     }
 
     /**

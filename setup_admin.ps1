@@ -52,7 +52,6 @@ CREATE DATABASE IF NOT EXISTS peluqueria_pedidos   CHARACTER SET utf8mb4 COLLATE
 CREATE DATABASE IF NOT EXISTS peluqueria_pago      CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE DATABASE IF NOT EXISTS peluqueria_despacho   CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE DATABASE IF NOT EXISTS peluqueria_notificaciones CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE DATABASE IF NOT EXISTS peluqueria_certificacion  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE DATABASE IF NOT EXISTS peluqueria_reportes  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 SHOW DATABASES;
 "@

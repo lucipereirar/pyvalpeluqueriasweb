@@ -1,5 +1,7 @@
 package com.peluqueria.ms_despacho.service.impl;
 
+import com.peluqueria.ms_despacho.client.NotificacionFeignClient;
+import com.peluqueria.ms_despacho.client.dto.NotificacionClientDTO;
 import com.peluqueria.ms_despacho.dto.DespachoRequestDTO;
 import com.peluqueria.ms_despacho.dto.DespachoResponseDTO;
 import com.peluqueria.ms_despacho.exception.ResourceNotFoundException;
@@ -27,6 +29,9 @@ public class DespachoServiceImplTest {
 
     @Mock
     private DespachoRepository despachoRepository;
+
+    @Mock
+    private NotificacionFeignClient notificacionClient;
 
     @InjectMocks
     private DespachoServiceImpl despachoService;
@@ -80,6 +85,8 @@ public class DespachoServiceImplTest {
         assertEquals("PENDIENTE", response.getEstado());
         assertEquals("TRK-ABC12345", response.getTrackingCode());
         verify(despachoRepository, times(1)).save(any(Despacho.class));
+        // Al crear el despacho se notifica al usuario (tipo DESPACHO).
+        verify(notificacionClient, times(1)).crear(any(NotificacionClientDTO.class));
     }
 
     /**
@@ -253,6 +260,8 @@ public class DespachoServiceImplTest {
         assertNotNull(despacho.getFechaEntregaReal());
         verify(despachoRepository, times(1)).findById(1L);
         verify(despachoRepository, times(1)).save(despacho);
+        // El cambio de estado también notifica al usuario.
+        verify(notificacionClient, times(1)).crear(any(NotificacionClientDTO.class));
     }
 
     /**

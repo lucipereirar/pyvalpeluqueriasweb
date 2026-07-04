@@ -21,4 +21,11 @@ public class PagoRequestDTO {
 
     @NotBlank
     private String metodoPago;
+
+    // Datos de envío opcionales: si se envían, ms-pago crea el despacho con esta dirección.
+    // Si se omiten, el despacho se crea con datos "Por confirmar" para completarse luego.
+    private String direccion;
+    private String ciudad;
+    private String region;
+    private String codigoPostal;
 }

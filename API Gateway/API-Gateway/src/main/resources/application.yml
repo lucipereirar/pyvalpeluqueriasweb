@@ -34,15 +34,16 @@ spring.cloud.gateway.routes[6].id: ms-notificaciones
 spring.cloud.gateway.routes[6].uri: lb://ms-notificaciones
 spring.cloud.gateway.routes[6].predicates[0]: Path=/api/notificaciones/**
 
-spring.cloud.gateway.routes[7].id: ms-certificacion
-spring.cloud.gateway.routes[7].uri: lb://ms-certificacion
-spring.cloud.gateway.routes[7].predicates[0]: Path=/api/certificaciones/**
+spring.cloud.gateway.routes[7].id: ms-reportes
+spring.cloud.gateway.routes[7].uri: lb://ms-reportes
+spring.cloud.gateway.routes[7].predicates[0]: Path=/api/reportes/**
 
-spring.cloud.gateway.routes[8].id: ms-reportes
-spring.cloud.gateway.routes[8].uri: lb://ms-reportes
-spring.cloud.gateway.routes[8].predicates[0]: Path=/api/reportes/**
+# Seguridad: el gateway valida el JWT emitido por ms-auth (mismo secreto compartido)
+jwt.secret: ${JWT_SECRET:5a8f3b2e9d1c7a4f6b0e2d8c5a3f9e7b1d4c8a2f6e0b3d9c7a5f2e8b1d4c6a3f}
 
-# Deshabilitar seguridad (gateway solo enruta, ms-auth maneja la autenticacion)
+# CORS para el frontend (configurable por variable de entorno)
+cors.allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:4173,http://localhost:3000}
+
 spring.autoconfigure.exclude: org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration,org.springframework.boot.autoconfigure.security.ReactiveUserDetailsServiceAutoConfiguration
 
 ---
