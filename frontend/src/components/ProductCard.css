@@ -1,0 +1,22 @@
+.producto { display: flex; flex-direction: column; }
+.producto__imagen {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: linear-gradient(145deg, var(--madera-clara), var(--crema-2));
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.producto__imagen img { width: 100%; height: 100%; object-fit: cover; }
+.producto__inicial {
+  font-family: var(--serif);
+  font-size: 3.4rem;
+  color: var(--madera-media);
+  opacity: 0.55;
+}
+.producto__cat { position: absolute; top: 12px; left: 12px; background: rgba(251, 247, 240, 0.9); }
+
+.producto__cuerpo { padding: 18px 20px 20px; display: flex; flex-direction: column; flex: 1; }
+.producto__nombre { font-size: 1.22rem; line-height: 1.2; margin-bottom: 6px; }
+.producto__desc { font-size: 0.88rem; color: var(--tinta-suave); flex: 1; margin-bottom: 16px; }
+.producto__pie { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.producto__precio { font-family: var(--serif); font-size: 1.4rem; color: var(--madera-oscura); }

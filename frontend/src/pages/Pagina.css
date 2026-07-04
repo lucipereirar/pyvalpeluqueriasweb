@@ -1,0 +1,54 @@
+/* Estilos compartidos para páginas simples (Quiénes somos, Contacto) */
+.encabezado-pagina {
+  background:
+    radial-gradient(100% 80% at 70% 0%, rgba(167, 179, 148, 0.18), transparent 60%),
+    linear-gradient(160deg, var(--crema-2), var(--arena));
+  padding: 72px 0 60px;
+}
+
+.pagina__texto { max-width: 720px; margin: 0 auto 56px; }
+.pagina__texto p { font-size: 1.08rem; color: var(--tinta-suave); margin-bottom: 18px; }
+.pagina__texto strong { color: var(--tinta); font-weight: 500; }
+
+.pagina__valores { margin-top: 8px; }
+.pagina__valor { padding: 28px 26px; }
+.pagina__valor h3 { font-size: 1.4rem; color: var(--madera-oscura); margin-bottom: 8px; }
+.pagina__valor p { color: var(--tinta-suave); font-size: 0.95rem; }
+
+.pagina__cta { background: var(--crema-2); padding: 64px 0; }
+.pagina__cta h2 { font-size: 2rem; margin-bottom: 10px; }
+.pagina__cta p { color: var(--tinta-suave); margin-bottom: 24px; }
+.pagina__cta-acciones { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+/* Contacto */
+.contacto__grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 48px; align-items: start; }
+.contacto__info h3 { font-size: 1.6rem; margin-bottom: 20px; color: var(--madera-oscura); }
+.contacto__info ul { list-style: none; display: flex; flex-direction: column; gap: 16px; }
+.contacto__info li { display: flex; flex-direction: column; font-size: 1.02rem; color: var(--tinta); }
+.contacto__info li span {
+  font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--tinta-tenue); margin-bottom: 2px;
+}
+.contacto__nota { margin-top: 24px; color: var(--tinta-suave); font-size: 0.92rem; }
+
+.contacto__form { padding: 32px 30px; }
+.contacto__form textarea {
+  width: 100%;
+  padding: 13px 16px;
+  border-radius: var(--radio-sm);
+  border: 1px solid var(--linea);
+  background: var(--crema);
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  color: var(--tinta);
+  resize: vertical;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+.contacto__form textarea:focus { outline: none; border-color: var(--madera-media); box-shadow: 0 0 0 3px rgba(176, 137, 104, 0.15); }
+.contacto__ok { text-align: center; padding: 24px 8px; }
+.contacto__ok h3 { font-size: 1.6rem; margin-bottom: 10px; }
+.contacto__ok p { color: var(--tinta-suave); margin-bottom: 20px; }
+
+@media (max-width: 760px) {
+  .contacto__grid { grid-template-columns: 1fr; gap: 32px; }
+}

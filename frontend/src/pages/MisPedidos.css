@@ -1,0 +1,92 @@
+.pedidos { padding: 48px 0 80px; }
+.pedidos h1 { font-size: 1.9rem; margin-bottom: 24px; }
+.pedidos__vacio {
+  background: var(--blanco);
+  border: 1px dashed var(--linea);
+  border-radius: 14px;
+  padding: 40px;
+  text-align: center;
+  display: grid;
+  gap: 14px;
+  justify-items: center;
+}
+.pedido {
+  background: var(--blanco);
+  border: 1px solid var(--linea);
+  border-radius: 14px;
+  padding: 22px;
+  margin-bottom: 18px;
+}
+.pedido__cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.pedido__cabecera h2 { font-size: 1.05rem; }
+.pedido__fecha { color: var(--tinta-tenue); font-size: 0.85rem; }
+.pedido__cabecera-der { display: flex; align-items: center; gap: 12px; }
+.pedido__estado {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--arena);
+  color: var(--tinta-suave);
+}
+.pedido__estado--cancelado { background: #FBE9E7; color: #8C3A2B; }
+.pedido__estado--entregado { background: #E8F0E4; color: var(--salvia-honda); }
+.pedido__items {
+  list-style: none;
+  margin: 14px 0;
+  padding: 12px 0;
+  border-top: 1px dashed var(--linea-suave);
+  border-bottom: 1px dashed var(--linea-suave);
+  display: grid;
+  gap: 6px;
+}
+.pedido__items li {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.92rem;
+  color: var(--tinta-suave);
+}
+.pedido__tracking { font-size: 0.9rem; margin-bottom: 12px; }
+.pedido__fallido { color: #8C3A2B; }
+.pedido__pasos {
+  list-style: none;
+  display: flex;
+  gap: 0;
+  padding: 0;
+  margin: 0;
+}
+.pedido__pasos li {
+  flex: 1;
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--tinta-tenue);
+  position: relative;
+  padding-top: 18px;
+}
+.pedido__punto {
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--linea);
+}
+.pedido__pasos li::before {
+  content: '';
+  position: absolute;
+  top: 5px; left: -50%;
+  width: 100%; height: 2px;
+  background: var(--linea);
+}
+.pedido__pasos li:first-child::before { display: none; }
+.pedido__pasos li.activo { color: var(--salvia-honda); font-weight: 600; }
+.pedido__pasos li.activo .pedido__punto { background: var(--salvia); }
+.pedido__pasos li.activo::before { background: var(--salvia); }
+.pedido__sin-despacho { color: var(--tinta-tenue); font-size: 0.9rem; }

@@ -1,0 +1,65 @@
+.encabezado-pagina {
+  background:
+    radial-gradient(100% 80% at 70% 0%, rgba(167, 179, 148, 0.18), transparent 60%),
+    linear-gradient(160deg, var(--crema-2), var(--arena));
+  padding: 72px 0 60px;
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin: 44px 0 20px;
+}
+.filtro {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 10px 22px;
+  border-radius: 100px;
+  color: var(--tinta-suave);
+  border: 1px solid var(--linea);
+  background: var(--blanco);
+  transition: all 0.2s ease;
+}
+.filtro:hover { border-color: var(--madera-media); color: var(--tinta); }
+.filtro--activo { background: var(--madera-oscura); color: var(--crema); border-color: var(--madera-oscura); }
+
+.cat-servicio { padding: 40px 0; border-bottom: 1px solid var(--linea-suave); }
+.cat-servicio:last-of-type { border-bottom: none; }
+.cat-servicio__cab { margin-bottom: 26px; }
+.cat-servicio__cab h2 { font-size: 2rem; color: var(--madera-oscura); }
+.cat-servicio__cab p { color: var(--tinta-suave); margin-top: 4px; }
+
+.lista-servicios { list-style: none; display: flex; flex-direction: column; }
+.linea-servicio {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 18px 0;
+  border-bottom: 1px dashed var(--linea);
+}
+.linea-servicio:last-child { border-bottom: none; }
+.linea-servicio__info { display: flex; flex-direction: column; }
+.linea-servicio__nombre { font-size: 1.16rem; font-weight: 400; }
+.linea-servicio__detalle { font-size: 0.86rem; color: var(--tinta-tenue); }
+.linea-servicio__puntos { flex: 1; border-bottom: 2px dotted var(--linea); margin-bottom: 6px; }
+.linea-servicio__meta { display: flex; flex-direction: column; align-items: flex-end; }
+.linea-servicio__duracion { font-size: 0.76rem; color: var(--tinta-tenue); text-transform: uppercase; letter-spacing: 0.08em; }
+.linea-servicio__precio { font-family: var(--serif); font-size: 1.5rem; color: var(--tinta); }
+
+.reserva-nota {
+  margin-top: 40px;
+  background: var(--crema-2);
+  padding: 64px 0;
+}
+.reserva-nota h2 { font-size: 2rem; margin-bottom: 10px; }
+.reserva-nota p { color: var(--tinta-suave); max-width: 520px; margin: 0 auto; }
+
+@media (max-width: 560px) {
+  .linea-servicio__puntos { display: none; }
+  .linea-servicio { flex-wrap: wrap; gap: 4px; }
+  .linea-servicio__meta { align-items: flex-start; flex-direction: row; gap: 12px; align-items: baseline; }
+}

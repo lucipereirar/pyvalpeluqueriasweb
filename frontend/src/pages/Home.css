@@ -1,0 +1,85 @@
+/* ---------- HERO ---------- */
+.hero {
+  position: relative;
+  min-height: 92vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  background: var(--madera-oscura);
+}
+/* Foto del salón + overlay cálido oscuro. Guarda la foto en
+   frontend/public/hero-salon.jpg; si no existe, se ve el degradado. */
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to bottom, rgba(33, 28, 24, 0.28) 0%, rgba(33, 28, 24, 0.5) 60%, rgba(33, 28, 24, 0.68) 100%),
+    url('/hero-salon.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.hero__contenido {
+  position: relative;
+  z-index: 1;
+  color: var(--crema);
+  padding: 120px 24px;
+  max-width: 760px;
+}
+.hero__sub {
+  font-size: clamp(1rem, 2vw, 1.18rem);
+  color: rgba(251, 247, 240, 0.9);
+  max-width: 560px;
+  margin: 22px auto 34px;
+  font-weight: 300;
+  font-style: italic;
+  font-family: var(--serif);
+}
+.hero__acciones { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+
+/* ---------- PILARES ---------- */
+.pilares { display: grid; grid-template-columns: repeat(3, 1fr); gap: 34px; }
+.pilar { text-align: center; padding: 12px; }
+.pilar__icono {
+  width: 68px; height: 68px;
+  border-radius: 50%;
+  background: var(--blanco);
+  color: var(--salvia-honda);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+  box-shadow: var(--sombra-sm);
+  border: 1px solid var(--linea-suave);
+}
+.pilar h3 { font-size: 1.45rem; margin-bottom: 8px; }
+.pilar p { color: var(--tinta-suave); font-size: 0.95rem; max-width: 300px; margin: 0 auto; }
+
+/* ---------- DESTACADOS ---------- */
+.destacado { padding: 26px 24px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.destacado__nombre { font-size: 1.4rem; margin-top: 6px; }
+.destacado__detalle { color: var(--tinta-suave); font-size: 0.88rem; }
+.destacado__precio { font-family: var(--serif); font-size: 1.6rem; color: var(--madera-oscura); margin-top: 6px; }
+
+/* ---------- CTA ---------- */
+.cta {
+  background: linear-gradient(135deg, var(--salvia-honda), var(--salvia-media));
+  color: var(--crema);
+}
+.cta__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  padding: 64px 24px;
+  flex-wrap: wrap;
+}
+.cta__titulo { color: var(--crema); font-size: clamp(1.8rem, 3.5vw, 2.6rem); }
+.cta__sub { color: rgba(251, 247, 240, 0.85); margin-top: 8px; font-weight: 300; }
+.cta .btn--salvia { background: var(--crema); color: var(--salvia-honda); }
+.cta .btn--salvia:hover { background: var(--tinta); color: var(--crema); }
+
+@media (max-width: 860px) {
+  .pilares { grid-template-columns: 1fr; gap: 40px; }
+  .hero__inner { min-height: 70vh; }
+}

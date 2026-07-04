@@ -1,0 +1,219 @@
+/* ============================================================
+   Pyval — Sistema de diseño
+   Estética: rústica y elegante. Tonos madera suaves y claros,
+   toques de vegetación (verde salvia), ambiente luminoso y
+   cálido, tipografía negra sobre superficies claras.
+   ============================================================ */
+
+:root {
+  /* Superficies cálidas y claras */
+  --crema: #FBF7F0;
+  --crema-2: #F6EFE4;
+  --arena: #EFE4D4;
+
+  /* Madera suave */
+  --madera-clara: #E4CBA9;
+  --madera: #C9A47C;
+  --madera-media: #B08968;
+  --madera-oscura: #7F5539;
+
+  /* Vegetación / salvia para relajación */
+  --salvia: #A7B394;
+  --salvia-media: #869072;
+  --salvia-honda: #5E6B4E;
+
+  /* Tinta (letras negras) */
+  --tinta: #211C18;
+  --tinta-suave: #4A4038;
+  --tinta-tenue: #8A7E70;
+
+  /* Utilidad */
+  --blanco: #FFFFFF;
+  --linea: #E2D5C2;
+  --linea-suave: #EEE5D6;
+
+  --sombra-sm: 0 2px 10px rgba(127, 85, 57, 0.06);
+  --sombra: 0 12px 32px rgba(127, 85, 57, 0.10);
+  --sombra-lg: 0 24px 60px rgba(127, 85, 57, 0.14);
+
+  --radio: 14px;
+  --radio-sm: 10px;
+  --radio-lg: 24px;
+
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Jost', 'Segoe UI', system-ui, sans-serif;
+
+  --ancho: 1180px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  color: var(--tinta);
+  background: var(--crema);
+  font-weight: 300;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--serif);
+  font-weight: 500;
+  line-height: 1.12;
+  color: var(--tinta);
+  letter-spacing: 0.2px;
+}
+
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+button { font-family: var(--sans); cursor: pointer; border: none; background: none; }
+
+/* ---------- Layout ---------- */
+.contenedor {
+  width: 100%;
+  max-width: var(--ancho);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.seccion { padding: 88px 0; }
+.seccion--crema { background: var(--crema); }
+.seccion--arena { background: var(--crema-2); }
+
+.eyebrow {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 0.74rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--madera-media);
+  display: inline-block;
+  margin-bottom: 14px;
+}
+
+.titulo-seccion {
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin-bottom: 14px;
+}
+
+.subtitulo-seccion {
+  font-family: var(--sans);
+  font-weight: 300;
+  color: var(--tinta-suave);
+  max-width: 560px;
+  font-size: 1.02rem;
+}
+
+.centro { text-align: center; }
+.centro .subtitulo-seccion { margin-left: auto; margin-right: auto; }
+
+/* ---------- Botones ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 0.82rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 14px 30px;
+  border-radius: 100px;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+}
+.btn--solido {
+  background: var(--madera-oscura);
+  color: var(--crema);
+}
+.btn--solido:hover { background: var(--tinta); transform: translateY(-2px); box-shadow: var(--sombra); }
+.btn--contorno {
+  background: transparent;
+  color: var(--tinta);
+  box-shadow: inset 0 0 0 1.5px var(--madera-media);
+}
+.btn--contorno:hover { background: var(--madera-media); color: var(--crema); transform: translateY(-2px); }
+.btn--salvia { background: var(--salvia-honda); color: var(--crema); }
+.btn--salvia:hover { background: var(--salvia-media); transform: translateY(-2px); }
+.btn--contorno-claro {
+  background: transparent;
+  color: var(--crema);
+  box-shadow: inset 0 0 0 1.5px rgba(251, 247, 240, 0.7);
+}
+.btn--contorno-claro:hover { background: var(--crema); color: var(--tinta); transform: translateY(-2px); }
+.btn--pequeno { padding: 10px 20px; font-size: 0.72rem; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.btn--bloque { width: 100%; }
+
+/* ---------- Tarjetas ---------- */
+.tarjeta {
+  background: var(--blanco);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra-sm);
+  border: 1px solid var(--linea-suave);
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.tarjeta:hover { transform: translateY(-4px); box-shadow: var(--sombra); }
+
+.badge {
+  display: inline-block;
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 100px;
+  background: var(--crema-2);
+  color: var(--salvia-honda);
+  border: 1px solid var(--linea);
+}
+
+/* ---------- Formularios ---------- */
+.campo { margin-bottom: 18px; }
+.campo label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--tinta-suave);
+  margin-bottom: 7px;
+  text-transform: uppercase;
+}
+.campo input, .campo select {
+  width: 100%;
+  padding: 13px 16px;
+  border-radius: var(--radio-sm);
+  border: 1px solid var(--linea);
+  background: var(--crema);
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  color: var(--tinta);
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+.campo input:focus, .campo select:focus {
+  outline: none;
+  border-color: var(--madera-media);
+  box-shadow: 0 0 0 3px rgba(176, 137, 104, 0.15);
+}
+
+/* ---------- Utilidades animación ---------- */
+@keyframes aparecer {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.aparecer { animation: aparecer 0.7s ease both; }
+
+.grid { display: grid; gap: 26px; }
+.grid--3 { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.grid--auto { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+
+/* Scrollbar cálida */
+::-webkit-scrollbar { width: 11px; }
+::-webkit-scrollbar-track { background: var(--crema-2); }
+::-webkit-scrollbar-thumb { background: var(--madera); border-radius: 100px; border: 3px solid var(--crema-2); }

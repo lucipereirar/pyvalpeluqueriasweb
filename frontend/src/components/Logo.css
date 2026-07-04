@@ -1,0 +1,41 @@
+.logo {
+  display: inline-flex;
+  color: inherit;
+  line-height: 1;
+}
+.logo__texto { display: inline-flex; flex-direction: column; }
+.logo__pyval {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  line-height: 0.9;
+}
+.logo__pelu {
+  font-family: 'Parisienne', cursive;
+  font-weight: 400;
+  line-height: 1;
+}
+
+/* ---------- Variante NAV (compacta, horizontal) ---------- */
+.logo--nav { flex-direction: row; align-items: center; gap: 10px; }
+.logo--nav .logo__texto { align-items: flex-start; }
+.logo--nav .logo__mariposa { width: 34px; height: auto; }
+.logo--nav .logo__pyval { font-size: 1.5rem; }
+.logo--nav .logo__pelu { font-size: 1.05rem; margin-top: -1px; margin-left: 1px; }
+
+/* ---------- Variante HERO (grande, centrada) ---------- */
+.logo--hero { flex-direction: column; align-items: center; gap: 2px; }
+.logo--hero .logo__texto { align-items: center; }
+.logo--hero .logo__mariposa {
+  width: clamp(56px, 8vw, 88px);
+  height: auto;
+  margin-bottom: 6px;
+}
+.logo--hero .logo__pyval {
+  font-size: clamp(3.2rem, 10vw, 6.5rem);
+  letter-spacing: 0.12em;
+}
+.logo--hero .logo__pelu {
+  font-size: clamp(2.2rem, 7vw, 4rem);
+  margin-top: -0.42em;
+}
