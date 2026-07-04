@@ -66,13 +66,11 @@ public class JwtAuthGlobalFilter implements GlobalFilter, Ordered {
             return forbidden(exchange);
         }
 
-        // Propagar identidad a los microservicios
-        ServerHttpRequest mutated = request.mutate()
-                .header("X-User-Id", String.valueOf(claims.get("id")))
-                .header("X-User-Email", claims.getSubject())
-                .header("X-User-Rol", rol)
-                .build();
-        return chain.filter(exchange.mutate().request(mutated).build());
+        // Token válido y rol suficiente: se enruta la petición original.
+        // (La propagación de identidad X-User-* se agregará cuando los
+        // microservicios la consuman; mutar headers aquí choca con los
+        // ReadOnlyHttpHeaders de esta versión de Spring.)
+        return chain.filter(exchange);
     }
 
     private boolean isPublic(String path, HttpMethod method) {

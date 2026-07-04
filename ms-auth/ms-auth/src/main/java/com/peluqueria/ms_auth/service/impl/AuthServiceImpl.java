@@ -4,6 +4,7 @@ import com.peluqueria.ms_auth.dto.LoginRequestDTO;
 import com.peluqueria.ms_auth.dto.LoginResponseDTO;
 import com.peluqueria.ms_auth.dto.UsuarioRequestDTO;
 import com.peluqueria.ms_auth.dto.UsuarioResponseDTO;
+import com.peluqueria.ms_auth.model.Rol;
 import com.peluqueria.ms_auth.model.Usuario;
 import com.peluqueria.ms_auth.repository.UsuarioRepository;
 import com.peluqueria.ms_auth.security.JwtService;
@@ -57,6 +58,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public UsuarioResponseDTO register(UsuarioRequestDTO dto) {
+        // El registro público SIEMPRE crea clientes: impide que cualquiera
+        // se auto-asigne ADMIN. Los roles superiores se gestionan por
+        // /api/usuarios, ruta exclusiva de ADMIN en el gateway.
+        dto.setRol(Rol.CLIENTE.name());
         return usuarioService.crear(dto);
     }
 }
