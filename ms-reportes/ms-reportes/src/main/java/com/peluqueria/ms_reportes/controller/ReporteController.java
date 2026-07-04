@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
-@Tag(name = "Reportes", description = "Generación y gestión de reportes del sistema (exportables a Excel con Apache POI)")
+@Tag(name = "Reportes", description = "Analítica de ventas (resumen de KPIs y exportación a Excel con Apache POI) e historial de reportes del sistema")
 @RestController
 @RequestMapping("/api/reportes")
 @RequiredArgsConstructor
