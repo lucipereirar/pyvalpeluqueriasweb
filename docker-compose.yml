@@ -11,11 +11,11 @@
     networks:
       - peluqueria-net
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot || exit 1"]
       interval: 10s
       timeout: 5s
-      retries: 12
-      start_period: 40s
+      retries: 20
+      start_period: 90s
 
   eureka-server:
     build:
