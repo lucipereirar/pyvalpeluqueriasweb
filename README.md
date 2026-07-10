@@ -7,10 +7,8 @@ Sistema de e-commerce para venta de productos de belleza y peluquería: backend 
 | Nombre | Rol |
 |--------|-----|
 | Luciano Alonso Pereira Rodriguez | Desarrollador Backend |
-| _(Nombre del segundo integrante)_ | Desarrollador Backend |
 
-> **Asignatura:** DSY1103 — Desarrollo FullStack 1  
-> **Evaluación:** Examen Final Transversal (EFT)  
+ 
 > **Repositorio:** https://github.com/lucipereirar/pyvalpeluqueriasweb (público)
 
 ---
@@ -236,19 +234,6 @@ La cobertura se mide con **JaCoCo** (configurado en el `pom.xml` padre). Al ejec
 
 Se excluyen del cálculo las clases sin lógica de negocio (entidades, DTOs, mappers, configuración, excepciones, clientes Feign y clases `Application`), de modo que el porcentaje refleje la **capa de servicio**. La cobertura de instrucciones de la lógica de negocio supera el **80%** exigido (≈ **94%** global; cada microservicio ≥ 87%).
 
----
-
-## Despliegue Remoto (Railway / Render u otra plataforma)
-
-El sistema puede desplegarse en una plataforma cloud que soporte contenedores o JARs de Spring Boot. Pasos generales:
-
-1. **Base de datos:** provisionar una instancia MySQL administrada y crear las 8 bases (`peluqueria_auth`, `peluqueria_productos`, …).
-2. **Variables de entorno** (por servicio): `DB_USERNAME`, `DB_PASSWORD`, la URL del datasource, `JWT_SECRET` (el mismo en `ms-auth` y el Gateway) y `CORS_ALLOWED_ORIGINS` con el dominio del frontend.
-3. **Eureka y Gateway:** desplegar primero el `eureka-server`; configurar `eureka.client.service-url.defaultZone` de cada servicio apuntando a la URL pública de Eureka; desplegar el `api-gateway` como punto de entrada.
-4. **Microservicios:** desplegar cada uno (imagen Docker de su `Dockerfile`, o el JAR generado con `mvn package`).
-5. **Frontend:** publicar `frontend/` (build de Vite) apuntando `VITE_API_URL` a la URL pública del Gateway.
-
-> Los `Dockerfile` y el `docker-compose.yml` incluidos sirven de base tanto para el despliegue local containerizado como para la construcción de imágenes en el registro de la plataforma elegida.
 
 ---
 
