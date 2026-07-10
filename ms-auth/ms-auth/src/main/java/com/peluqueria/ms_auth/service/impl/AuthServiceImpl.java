@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -22,6 +24,8 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
+
+    private static final Logger log = LoggerFactory.getLogger(AuthServiceImpl.class);
 
     private final UsuarioService usuarioService;
     private final UsuarioRepository usuarioRepository;
@@ -45,6 +49,7 @@ public class AuthServiceImpl implements AuthService {
                 "rol", usuario.getRol().name()
         );
 
+        log.info("Login exitoso: usuario={}, rol={}", usuario.getEmail(), usuario.getRol());
         String token = jwtService.generateToken(userDetails, extraClaims);
 
         return LoginResponseDTO.builder()

@@ -10,6 +10,8 @@ import com.peluqueria.ms_auth.repository.UsuarioRepository;
 import com.peluqueria.ms_auth.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,17 +21,22 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UsuarioServiceImpl implements UsuarioService {
 
+    private static final Logger log = LoggerFactory.getLogger(UsuarioServiceImpl.class);
+
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public UsuarioResponseDTO crear(UsuarioRequestDTO dto) {
         if (usuarioRepository.existsByEmail(dto.getEmail())) {
+            log.warn("Registro rechazado: el email ya existe: {}", dto.getEmail());
             throw new ConflictException("Ya existe un usuario registrado con el email: " + dto.getEmail());
         }
         Usuario usuario = UsuarioMapper.toEntity(dto);
         usuario.setPassword(passwordEncoder.encode(dto.getPassword()));
-        return UsuarioMapper.toDTO(usuarioRepository.save(usuario));
+        Usuario guardado = usuarioRepository.save(usuario);
+        log.info("Usuario creado: id={}, email={}, rol={}", guardado.getId(), guardado.getEmail(), guardado.getRol());
+        return UsuarioMapper.toDTO(guardado);
     }
 
     @Override

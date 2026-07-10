@@ -9,6 +9,8 @@ import com.peluqueria.ms_productos.model.Producto;
 import com.peluqueria.ms_productos.repository.ProductoRepository;
 import com.peluqueria.ms_productos.service.ProductoService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -19,12 +21,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ProductoServiceImpl implements ProductoService {
 
+    private static final Logger log = LoggerFactory.getLogger(ProductoServiceImpl.class);
+
     private final ProductoRepository productoRepository;
 
     @Override
     public ProductoResponseDTO crear(ProductoRequestDTO dto) {
         Producto producto = ProductoMapper.toEntity(dto);
-        return ProductoMapper.toDTO(productoRepository.save(producto));
+        Producto guardado = productoRepository.save(producto);
+        log.info("Producto creado: id={}, nombre='{}'", guardado.getId(), guardado.getNombre());
+        return ProductoMapper.toDTO(guardado);
     }
 
     @Override
@@ -55,6 +61,7 @@ public class ProductoServiceImpl implements ProductoService {
                     .map(ProductoMapper::toDTO)
                     .collect(Collectors.toList());
         } catch (IllegalArgumentException e) {
+            log.warn("Categoría inválida recibida en listado: '{}'", categoria);
             throw new IllegalArgumentException("Categoría inválida: '" + categoria +
                     "'. Valores permitidos: " + Arrays.toString(Categoria.values()));
         }
@@ -78,11 +85,14 @@ public class ProductoServiceImpl implements ProductoService {
         try {
             producto.setCategoria(Categoria.valueOf(dto.getCategoria().toUpperCase()));
         } catch (IllegalArgumentException e) {
+            log.warn("Categoría inválida recibida al actualizar: '{}'", dto.getCategoria());
             throw new IllegalArgumentException("Categoría inválida: '" + dto.getCategoria() +
                     "'. Valores permitidos: " + Arrays.toString(Categoria.values()));
         }
         producto.setImagen(dto.getImagen());
-        return ProductoMapper.toDTO(productoRepository.save(producto));
+        Producto actualizado = productoRepository.save(producto);
+        log.info("Producto actualizado: id={}", actualizado.getId());
+        return ProductoMapper.toDTO(actualizado);
     }
 
     @Override
@@ -91,5 +101,6 @@ public class ProductoServiceImpl implements ProductoService {
                 .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id: " + id));
         producto.setActivo(false);
         productoRepository.save(producto);
+        log.info("Producto desactivado (baja lógica): id={}", id);
     }
 }

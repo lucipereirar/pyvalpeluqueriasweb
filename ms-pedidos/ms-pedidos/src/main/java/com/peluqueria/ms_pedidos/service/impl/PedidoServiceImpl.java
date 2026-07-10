@@ -13,6 +13,8 @@ import com.peluqueria.ms_pedidos.model.Pedido;
 import com.peluqueria.ms_pedidos.repository.PedidoRepository;
 import com.peluqueria.ms_pedidos.service.PedidoService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -24,6 +26,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PedidoServiceImpl implements PedidoService {
+
+    private static final Logger log = LoggerFactory.getLogger(PedidoServiceImpl.class);
 
     private final PedidoRepository pedidoRepository;
     private final ProductoFeignClient productoFeignClient;
@@ -50,7 +54,9 @@ public class PedidoServiceImpl implements PedidoService {
         pedido.setImpuesto(impuesto);
         pedido.setTotal(subtotal.add(impuesto));
 
-        return PedidoMapper.toDTO(pedidoRepository.save(pedido));
+        Pedido guardado = pedidoRepository.save(pedido);
+        log.info("Pedido creado: id={}, usuario={}, total={}", guardado.getId(), guardado.getUsuarioId(), guardado.getTotal());
+        return PedidoMapper.toDTO(guardado);
     }
 
     @Override
@@ -81,6 +87,7 @@ public class PedidoServiceImpl implements PedidoService {
         try {
             pedido.setEstado(EstadoPedido.valueOf(estado.toUpperCase()));
         } catch (IllegalArgumentException e) {
+            log.warn("Estado de pedido inválido recibido: '{}'", estado);
             throw new IllegalArgumentException("Estado inválido: '" + estado +
                     "'. Valores permitidos: " + Arrays.toString(EstadoPedido.values()));
         }
@@ -94,6 +101,7 @@ public class PedidoServiceImpl implements PedidoService {
                 .orElseThrow(() -> new ResourceNotFoundException("Pedido no encontrado con id: " + id));
         if (EstadoPedido.DESPACHADO.equals(pedido.getEstado()) ||
                 EstadoPedido.ENTREGADO.equals(pedido.getEstado())) {
+            log.warn("Intento de cancelar pedido {} en estado no cancelable: {}", id, pedido.getEstado());
             throw new RuntimeException("No se puede cancelar un pedido en estado: " + pedido.getEstado());
         }
         pedido.setEstado(EstadoPedido.CANCELADO);

@@ -13,6 +13,8 @@ import com.peluqueria.ms_carrito.repository.CarritoRepository;
 import com.peluqueria.ms_carrito.repository.ItemCarritoRepository;
 import com.peluqueria.ms_carrito.service.CarritoService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -21,6 +23,8 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class CarritoServiceImpl implements CarritoService {
+
+    private static final Logger log = LoggerFactory.getLogger(CarritoServiceImpl.class);
 
     private final CarritoRepository carritoRepository;
     private final ItemCarritoRepository itemCarritoRepository;
@@ -37,6 +41,7 @@ public class CarritoServiceImpl implements CarritoService {
 
     @Override
     public CarritoResponseDTO agregarItem(Long usuarioId, ItemCarritoRequestDTO dto) {
+        log.info("Agregando producto {} (x{}) al carrito del usuario {}", dto.getProductoId(), dto.getCantidad(), usuarioId);
         Carrito carrito = carritoRepository
                 .findByUsuarioIdAndEstado(usuarioId, EstadoCarrito.ACTIVO)
                 .orElseGet(() -> carritoRepository.save(
@@ -48,6 +53,7 @@ public class CarritoServiceImpl implements CarritoService {
             throw new RuntimeException("El producto no está disponible: " + producto.getNombre());
         }
         if (producto.getStock() < dto.getCantidad()) {
+            log.warn("Stock insuficiente para producto {}: solicitado {}, disponible {}", dto.getProductoId(), dto.getCantidad(), producto.getStock());
             throw new RuntimeException("Stock insuficiente. Disponible: " + producto.getStock());
         }
 

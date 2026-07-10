@@ -9,6 +9,8 @@ import com.peluqueria.ms_reportes.model.TipoReporte;
 import com.peluqueria.ms_reportes.repository.ReporteRepository;
 import com.peluqueria.ms_reportes.service.ReporteService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -19,12 +21,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ReporteServiceImpl implements ReporteService {
 
+    private static final Logger log = LoggerFactory.getLogger(ReporteServiceImpl.class);
+
     private final ReporteRepository reporteRepository;
 
     @Override
     public ReporteResponseDTO generar(ReporteRequestDTO dto) {
         Reporte reporte = ReporteMapper.toEntity(dto);
-        return ReporteMapper.toDTO(reporteRepository.save(reporte));
+        Reporte guardado = reporteRepository.save(reporte);
+        log.info("Reporte generado: id={}, tipo={}", guardado.getId(), guardado.getTipo());
+        return ReporteMapper.toDTO(guardado);
     }
 
     @Override
@@ -48,6 +54,7 @@ public class ReporteServiceImpl implements ReporteService {
                     .map(ReporteMapper::toDTO)
                     .collect(Collectors.toList());
         } catch (IllegalArgumentException e) {
+            log.warn("Tipo de reporte inválido recibido: '{}'", tipo);
             throw new IllegalArgumentException("Tipo de reporte inválido: '" + tipo +
                     "'. Valores permitidos: " + Arrays.toString(TipoReporte.values()));
         }

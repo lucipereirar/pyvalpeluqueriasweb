@@ -8,6 +8,8 @@ import com.peluqueria.ms_notificaciones.model.Notificacion;
 import com.peluqueria.ms_notificaciones.repository.NotificacionRepository;
 import com.peluqueria.ms_notificaciones.service.NotificacionService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,12 +20,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class NotificacionServiceImpl implements NotificacionService {
 
+    private static final Logger log = LoggerFactory.getLogger(NotificacionServiceImpl.class);
+
     private final NotificacionRepository notificacionRepository;
 
     @Override
     public NotificacionResponseDTO crear(NotificacionRequestDTO dto) {
         Notificacion notificacion = NotificacionMapper.toEntity(dto);
-        return NotificacionMapper.toDTO(notificacionRepository.save(notificacion));
+        Notificacion guardada = notificacionRepository.save(notificacion);
+        log.info("Notificación creada: id={}, tipo={}, usuario={}", guardada.getId(), guardada.getTipo(), guardada.getUsuarioId());
+        return NotificacionMapper.toDTO(guardada);
     }
 
     @Override
